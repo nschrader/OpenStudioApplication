@@ -20,7 +20,7 @@ module Model
 
   class Model
     def getAutosizedValue(object, str, units)
-      puts "OH YEAH"
+      puts "OH YEAH - #{str} - #{units}"
       STDOUT.flush
 
       case str
@@ -88,6 +88,7 @@ def export_openstudio_libraries
       puts "*** Making #{template_name} ***"
       template_start_time = Time.now
       puts "* Started #{template_name} at: #{template_start_time}"
+      std_applier = nil
       begin
         std_applier = Standard.build(template_name)
       rescue Exception => e
@@ -107,7 +108,7 @@ def export_openstudio_libraries
       # Boilers
       if include_boilers
         puts "* Boilers *"
-        std.standards_data['boilers'].each do |props|
+        std_applier.standards_data['boilers'].each do |props|
           next unless props['template'] == template_name
 
           # Make a new boiler
@@ -224,7 +225,7 @@ def export_openstudio_libraries
       # Unitary AC
       if include_unitary_acs
         puts "* Unitary ACs *"
-        std.standards_data['unitary_acs'].each do |props|
+        std_applier.standards_data['unitary_acs'].each do |props|
           next unless props['template'] == template_name
 
           # Skip interim efficiency requirements
@@ -305,7 +306,7 @@ def export_openstudio_libraries
       # Heat Pumps
       if include_heat_pumps
         puts "* Heat Pumps *"
-        std.standards_data['heat_pumps'].each do |props|
+        std_applier.standards_data['heat_pumps'].each do |props|
           next unless props['template'] == template_name
 
           # Skip interim efficiency requirements
@@ -419,7 +420,7 @@ def export_openstudio_libraries
       # Space Types
       if include_space_types
         puts "* Space Types *"
-        std.standards_data['space_types'].each do |props|
+        std_applier.standards_data['space_types'].each do |props|
           next unless props['template'] == template_name
 
           # Create a new space type
@@ -444,7 +445,7 @@ def export_openstudio_libraries
       # TODO fix code to remove duplicate constructions and materials
       if include_construction_sets
         puts "* Construction Sets *"
-        std.standards_data['construction_sets'].each do |props|
+        std_applier.standards_data['construction_sets'].each do |props|
           next unless props['template'] == template_name
           # Add a construction set for each valid climate zone
           templates_to_climate_zones[props['template']].each do |climate_zone|
